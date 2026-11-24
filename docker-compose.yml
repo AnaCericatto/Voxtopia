@@ -18,6 +18,11 @@ services:
             interval: 5s
             timeout: 3s
             retries: 10
-
+    mailpit:
+        image: axllent/mailpit
+        container_name: voxtopia-mailpit
+        ports:
+            - '127.0.0.1:1025:1025'
+            - '127.0.0.1:8025:8025'
 volumes:
     pgdata:
