@@ -1,14 +1,14 @@
 # Voxtopia - Design Document
 
-Status: Work in Progress. 
-Last Edit: 23-11-2026
+Status: Work in progress (milestone M0, Foundations, almost done).
+Last edit: 24-11-2026
 
 ## 1. What is Voxtopia
-A web app to **plan voxel builds in 2D and 3D, share them, and walk others through them step by step**. Builds can be for a specific game (Minecraft, Pokopia, ...) or general. People create their own **pieces** (blocks and items), keep them private or share them, and discover builds through search, tags and likes. 
+A web app to **plan voxel builds in 2D and 3D, share them, and walk others through them step by step**. Builds can be for a specific game (Minecraft, Pokopia, ...) or general. People create their own **pieces** (blocks and items), keep them private or share them, and discover builds through search, tags and likes.
 
 ## 2. Goals
-- Personal Goal: This is a project that I using to learn how to develop a new service from the begining to the end. A Full-stack project with clean architeture, test, CI, documentation and real features. Learn by doing: git workflow, testing, database design, file uploads, search, and later AI.
-- Project Goal: A fully functional plataform that can help creative people and players to plan, create and execute their projects in contruction games. Every milestone ends with something working, tested and deployable.
+- Personal Goal: This is a project I am using to learn how to develop a new service from the beginning to the end: a full-stack project with clean architecture, tests, CI, documentation and real features. Learn by doing: git workflow, testing, database design, file uploads, search, and later AI.
+- Project Goal: A fully functional platform that helps creative people and players plan, create and carry out their projects in construction games. Every milestone ends with something working, tested and deployable.
 
 ## 3. Glossary
 
@@ -58,8 +58,13 @@ Frontend stack
   built-in login, registration, password reset, email verification and two-factor authentication (ADR 0008).
   Fortify logic lives in `app/Actions/Fortify`. No teams, no WorkOS.
 - **Wayfinder** (included in the kit) generates typed route functions at build time, so a wrong route name fails the build (and CI).
-- **Zustand** for editor state (grid, palette, tool, undo/redo) (ADR 0009). Everything else comes from Laravel through Inertia props.
+- **Zustand** for editor state (grid, palette, tool, undo/redo). Everything else comes from Laravel through Inertia props.
 - **three.js** via react-three-fiber and drei for 3D; Canvas 2D for the plan view.
+- **Vite+** (`vp`) runs the build, lint, format and Vitest.
+
+Development environment
+- Docker Compose runs PostgreSQL 17 (development database `voxtopia`, test database `voxtopia_testing`) and Mailpit, a fake inbox that catches outgoing email (web page on port 8025).
+- GitHub Actions runs on every pull request against a PostgreSQL 17 service: Pint, Larastan, Vite+ check, `tsc`, Vitest and Pest. `main` is protected and requires it to pass.
 
 ## 5. Data model
 
@@ -83,6 +88,7 @@ erDiagram
 
   USERS {
     ulid id PK
+    string name
     string username UK
     string email UK
     string bio
@@ -176,6 +182,7 @@ erDiagram
 Notes
 - `TAGGABLES` is polymorphic (builds and pieces); the diagram cannot show that. The type column stores a morph alias (`build`, `piece`), never a class name.
 - `game_id` is nullable everywhere: empty means "general / any game".
+- `users.username`: 3-30 characters, lowercase letters, digits and `_`, stored lowercase and unique, some names reserved (`admin`, `settings`, ...). It becomes the profile URL `/u/{username}`. `name` is the display name. `bio` is optional, 280 characters, plain text.
 - Enum-typed columns show the PHP enum name in quotes (see 5.2).
 - `shape_template` and `geometry` apply to `kind = shape` only. With a template, `geometry` holds its parameters; with `custom`, it holds the parts list (see 7.1). Footprint columns (`size_w/h/d`) are derived from the geometry when the piece is saved.
 - `piece_materials` holds one row per material slot (color, optional opacity, optional image). Cube slots are faces; shape slots come from the template.
@@ -329,15 +336,15 @@ Tags are lowercase slugs, capped per item, user-created.
 |---|---|---|
 | Unit | Pest (runs on PHPUnit) | validators, footprint math, search filters, fallback resolver, enum list equals TypeScript union |
 | Feature | Pest (runs on PHPUnit, on Postgres) | permissions, visibility, limits, copy, likes, uploads |
-| Frontend unit | Vitest | editor store, plan tools, undo/redo, serializer |
+| Frontend unit | Vitest (through Vite+) | editor store, plan tools, undo/redo, serializer |
 | End to end | Playwright | 1–2 happy paths: register → build → save → share → view |
-| Static | Pint, Larastan, ESLint, `tsc` | style and types, in CI |
+| Static | Pint, Larastan, Vite+ (`vp check`: lint and format), `tsc` | style, lint and types, in CI |
 
 Rule: each feature PR includes its tests. CI must be green to merge.
 
 ## 11. Git workflow
 
-- `main` is always deployable. Work happens on short branches (`feat/…`, `fix/…`, `docs/…`) and merges by pull request, even when working alone.
+- `main` is always deployable. Work happens on short branches (`feat/…`, `fix/…`, `docs/…`, `chore/…`) and merges by pull request, even when working alone.
 - Conventional Commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`, `refactor:`).
 - One GitHub issue per unit of work; milestones M0–M9; a project board.
 - Branch protection on `main`: require the CI checks.
@@ -359,3 +366,5 @@ Rule: each feature PR includes its tests. CI must be green to merge.
 | M7 | Hardening | Moderation, quotas, S3 storage, thumbnails, deploy |
 | M8 | Shape modeler | Users assemble their own parts (box, wedge, cylinder, cone, profile) |
 | M9 | AI | Photo → shape plan → build, using cubes and shapes |
+
+
