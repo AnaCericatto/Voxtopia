@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { edit } from '@/routes/profile';
 import type { Auth } from '@/types';
 import { send } from '@/routes/verification';
+import { Textarea } from '@/components/ui/textarea';
 
 type PageProps = {
     auth: Auth;
@@ -66,6 +67,23 @@ export default function Profile({
                             </div>
 
                             <div className="grid gap-2">
+                                <Label htmlFor="username">Username</Label>
+                                <Input
+                                    id="username"
+                                    className="mt-1 block w-full"
+                                    defaultValue={auth.user.username}
+                                    name="username"
+                                    required
+                                    autoComplete="username"
+                                    placeholder="Username"
+                                />
+                                <InputError
+                                    className="mt-2"
+                                    message={errors.username}
+                                />
+                            </div>
+
+                            <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
 
                                 <Input
@@ -109,6 +127,21 @@ export default function Profile({
                                         )}
                                     </div>
                                 )}
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="bio">Bio</Label>
+                                <Textarea
+                                    id="bio"
+                                    name="bio"
+                                    maxLength={280}
+                                    defaultValue={auth.user.bio ?? ''}
+                                    placeholder="Tell people what you build"
+                                />
+                                <InputError
+                                    className="mt-2"
+                                    message={errors.bio}
+                                />
+                            </div>
 
                             <div className="flex items-center gap-4">
                                 <Button
