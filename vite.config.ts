@@ -75,4 +75,7 @@ export default defineConfig({
             stylesheet: 'resources/css/app.css',
         },
     },
+    test: {
+        include: ['resources/js/**/*.test.{ts,tsx}'],
+    },
 });
