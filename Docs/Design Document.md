@@ -327,8 +327,8 @@ Tags are lowercase slugs, capped per item, user-created.
 
 | Level | Tool | Covers |
 |---|---|---|
-| Unit | PHPUnit | validators, footprint math, search filters, fallback resolver, enum list equals TypeScript union |
-| Feature | PHPUnit (on Postgres) | permissions, visibility, limits, copy, likes, uploads |
+| Unit | Pest (runs on PHPUnit) | validators, footprint math, search filters, fallback resolver, enum list equals TypeScript union |
+| Feature | Pest (runs on PHPUnit, on Postgres) | permissions, visibility, limits, copy, likes, uploads |
 | Frontend unit | Vitest | editor store, plan tools, undo/redo, serializer |
 | End to end | Playwright | 1–2 happy paths: register → build → save → share → view |
 | Static | Pint, Larastan, ESLint, `tsc` | style and types, in CI |
