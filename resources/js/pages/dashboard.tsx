@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { dashboard } from '@/routes';
+/*import { dashboard } from '@/routes';*/
 
 export default function Dashboard() {
     return (
