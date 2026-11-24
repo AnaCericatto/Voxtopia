@@ -27,6 +27,15 @@ updates:
     cooldown:
       default-days: 5
     groups:
-      npm:
-        patterns:
-          - "*"
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      # Vite+ and the pieces that must match it are upgraded by hand
+      - dependency-name: "vite-plus"
+      - dependency-name: "@rolldown/plugin-babel"
+      - dependency-name: "@rollup/rollup-*"
+      # Node 22 is our runtime, so keep its types on 22
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
