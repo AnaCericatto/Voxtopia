@@ -52,7 +52,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /** @var list<string> */
     public const RESERVED_USERNAMES = [
         'admin', 'administrator', 'api', 'app', 'auth', 'build', 'builds', 'dashboard',
-        'explore', 'help', 'login', 'logout', 'me', 'new', 'null', 'pieces', 'register',
-        'root', 'search', 'settings', 'support', 'u', 'user', 'users', 'voxtopia',
+        'explore', 'help', 'login', 'logout', 'me', 'new', 'null', 'official', 'pieces', 'register',
+        'root', 'search', 'settings', 'support', 'system', 'u', 'user', 'users', 'voxtopia',
     ];
 }

@@ -8,3 +8,7 @@ it('uses a ULID as its primary key', function () {
 
     expect(Str::isUlid($user->id))->toBeTrue();
 });
+
+it('does not let anyone register the system username', function () {
+    expect(User::RESERVED_USERNAMES)->toContain('official', 'system');
+});

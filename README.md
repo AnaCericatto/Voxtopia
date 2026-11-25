@@ -30,6 +30,12 @@ composer dev              # start the app and the Vite dev server
 | Mailpit (fake inbox: verification and reset emails arrive here) | http://localhost:8025                                                                                                   |
 | PostgreSQL                                                      | `127.0.0.1:5432`, databases `voxtopia` (development) and `voxtopia_testing` (tests), user `voxtopia`, password `secret` |
 
+The official pieces are data, not demo data. After deploying, run:
+
+    php artisan db:seed --class=OfficialPiecesSeeder --force
+
+It is idempotent, so run it again whenever the palette changes.
+
 The seeder creates the user `test@example.com` with the password `password`.
 The database settings are for local development only.
 
