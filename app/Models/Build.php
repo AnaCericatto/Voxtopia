@@ -13,8 +13,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 // Only the title is user-editable. user_id, visibility, data and block_count are written by actions, never by mass assignment.
+/**
+ * @phpstan-type BuildData array{
+ *     version: int,
+ *     size: array{w: int, h: int, d: int},
+ *     palette: list<string>,
+ *     blocks: list<array{int, int, int, int, int, int}>
+ * }
+ *
+ * @property BuildVisibility $visibility
+ * @property BuildData $data
+ */
 #[Fillable(['title'])]
 class Build extends Model
 {
@@ -52,5 +64,20 @@ class Build extends Model
     public function scopeOwnedBy(Builder $query, User $user): void
     {
         $query->where('user_id', $user->id);
+    }
+
+    /**
+     * The palette pieces in palette order, so a block's palette index points at the right one.
+     *
+     * @return Collection<int, Piece|null>
+     */
+    public function palettePieces(): Collection
+    {
+        $ids = $this->data['palette'];
+
+        $pieces = Piece::query()->whereIn('id', $ids)->get()->keyBy('id');
+
+        // A missing piece would be null. M4 (rule R2) decides what to show then.
+        return collect($ids)->map(fn (string $id) => $pieces->get($id));
     }
 }
