@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'limit_reached' => 'You have reached the limit of :limit builds. Delete one to create another.',
+    'default_step_title' => 'Step :number',
+
     'errors' => [
         'data_invalid' => 'The build data is not in the expected format.',
         'version_unsupported' => 'This build was saved with a format version that is not supported.',
