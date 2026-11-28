@@ -6,6 +6,13 @@ use App\Models\Piece;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
+// TODO: DELETE AFTER ADDING PAGES
+beforeEach(function () {
+    // The pages arrive in M1.11. CI builds the assets before the tests, so without this
+    // Laravel looks the missing page file up in the Vite manifest and answers 500.
+    $this->withoutVite();
+});
+
 /**
  * A valid save payload that uses the given piece (3 blocks in 2 steps).
  *
