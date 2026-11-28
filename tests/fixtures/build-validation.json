@@ -1,0 +1,633 @@
+{
+    "cases": [
+        {
+            "name": "empty build with one step",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "one block",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, 0, 0]]
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "blocks in two steps",
+            "steps": 2,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": [
+                    "01aaaaaaaaaaaaaaaaaaaaaaaa",
+                    "01bbbbbbbbbbbbbbbbbbbbbbbb"
+                ],
+                "blocks": [
+                    [0, 0, 0, 0, 0, 0],
+                    [1, 0, 0, 1, 2, 1]
+                ]
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "block in the far corner",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[3, 2, 3, 0, 3, 0]]
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "unused palette entry",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": [
+                    "01aaaaaaaaaaaaaaaaaaaaaaaa",
+                    "01bbbbbbbbbbbbbbbbbbbbbbbb"
+                ],
+                "blocks": [[0, 0, 0, 0, 0, 0]]
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "empty palette and no blocks",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": [],
+                "blocks": []
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "same x and z on different layers",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [
+                    [1, 0, 1, 0, 0, 0],
+                    [1, 1, 1, 0, 0, 0]
+                ]
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "largest grid",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 64, "h": 32, "d": 64 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "smallest grid",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 1, "h": 1, "d": 1 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, 0, 0]]
+            },
+            "expect": "valid"
+        },
+        {
+            "name": "data is a string",
+            "steps": 1,
+            "data": "hello",
+            "expect": [{ "code": "data_invalid" }]
+        },
+        {
+            "name": "data is null",
+            "steps": 1,
+            "data": null,
+            "expect": [{ "code": "data_invalid" }]
+        },
+        {
+            "name": "version 2",
+            "steps": 1,
+            "data": {
+                "version": 2,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "version_unsupported" }]
+        },
+        {
+            "name": "version missing",
+            "steps": 1,
+            "data": {
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "version_unsupported" }]
+        },
+        {
+            "name": "version is a string",
+            "steps": 1,
+            "data": {
+                "version": "1",
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "version_unsupported" }]
+        },
+        {
+            "name": "size missing",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "size_invalid" }]
+        },
+        {
+            "name": "width 0",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 0, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "size_invalid" }]
+        },
+        {
+            "name": "width 65",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 65, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "size_invalid" }]
+        },
+        {
+            "name": "height 33",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 33, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "size_invalid" }]
+        },
+        {
+            "name": "depth 65",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 65 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "size_invalid" }]
+        },
+        {
+            "name": "width is a decimal",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4.5, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "size_invalid" }]
+        },
+        {
+            "name": "width is a string",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": "4", "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "size_invalid" }]
+        },
+        {
+            "name": "size lacks depth",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": []
+            },
+            "expect": [{ "code": "size_invalid" }]
+        },
+        {
+            "name": "palette missing",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "blocks": []
+            },
+            "expect": [{ "code": "palette_invalid" }]
+        },
+        {
+            "name": "palette repeats a piece",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": [
+                    "01aaaaaaaaaaaaaaaaaaaaaaaa",
+                    "01aaaaaaaaaaaaaaaaaaaaaaaa"
+                ],
+                "blocks": []
+            },
+            "expect": [{ "code": "palette_invalid" }]
+        },
+        {
+            "name": "palette is an object",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": { "a": "01aaaaaaaaaaaaaaaaaaaaaaaa" },
+                "blocks": []
+            },
+            "expect": [{ "code": "palette_invalid" }]
+        },
+        {
+            "name": "palette id is too short",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["abc"],
+                "blocks": []
+            },
+            "expect": [{ "code": "palette_invalid" }]
+        },
+        {
+            "name": "palette id has capitals",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01AAAAAAAAAAAAAAAAAAAAAAAA"],
+                "blocks": []
+            },
+            "expect": [{ "code": "palette_invalid" }]
+        },
+        {
+            "name": "palette id is a number",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": [5],
+                "blocks": []
+            },
+            "expect": [{ "code": "palette_invalid" }]
+        },
+        {
+            "name": "blocks missing",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"]
+            },
+            "expect": [{ "code": "data_invalid" }]
+        },
+        {
+            "name": "blocks is a string",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": "x"
+            },
+            "expect": [{ "code": "data_invalid" }]
+        },
+        {
+            "name": "block with five numbers",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, 0]]
+            },
+            "expect": [{ "code": "block_malformed", "index": 0 }]
+        },
+        {
+            "name": "block with seven numbers",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, 0, 0, 0]]
+            },
+            "expect": [{ "code": "block_malformed", "index": 0 }]
+        },
+        {
+            "name": "block with a decimal",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0.5, 0, 0, 0, 0]]
+            },
+            "expect": [{ "code": "block_malformed", "index": 0 }]
+        },
+        {
+            "name": "block with a string",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, "0", 0, 0, 0, 0]]
+            },
+            "expect": [{ "code": "block_malformed", "index": 0 }]
+        },
+        {
+            "name": "block that is a number",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [7]
+            },
+            "expect": [{ "code": "block_malformed", "index": 0 }]
+        },
+        {
+            "name": "block that is an object",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [{ "x": 0 }]
+            },
+            "expect": [{ "code": "block_malformed", "index": 0 }]
+        },
+        {
+            "name": "x equals the width",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[4, 0, 0, 0, 0, 0]]
+            },
+            "expect": [{ "code": "block_out_of_bounds", "index": 0 }]
+        },
+        {
+            "name": "y equals the height",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 3, 0, 0, 0, 0]]
+            },
+            "expect": [{ "code": "block_out_of_bounds", "index": 0 }]
+        },
+        {
+            "name": "z equals the depth",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 4, 0, 0, 0]]
+            },
+            "expect": [{ "code": "block_out_of_bounds", "index": 0 }]
+        },
+        {
+            "name": "negative y",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, -1, 0, 0, 0, 0]]
+            },
+            "expect": [{ "code": "block_out_of_bounds", "index": 0 }]
+        },
+        {
+            "name": "palette index too high",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 1, 0, 0]]
+            },
+            "expect": [{ "code": "palette_index_out_of_range", "index": 0 }]
+        },
+        {
+            "name": "negative palette index",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, -1, 0, 0]]
+            },
+            "expect": [{ "code": "palette_index_out_of_range", "index": 0 }]
+        },
+        {
+            "name": "block with an empty palette",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": [],
+                "blocks": [[0, 0, 0, 0, 0, 0]]
+            },
+            "expect": [{ "code": "palette_index_out_of_range", "index": 0 }]
+        },
+        {
+            "name": "rotation 4",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, 4, 0]]
+            },
+            "expect": [{ "code": "rotation_invalid", "index": 0 }]
+        },
+        {
+            "name": "negative rotation",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, -1, 0]]
+            },
+            "expect": [{ "code": "rotation_invalid", "index": 0 }]
+        },
+        {
+            "name": "step equals the step count",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, 0, 1]]
+            },
+            "expect": [{ "code": "step_out_of_range", "index": 0 }]
+        },
+        {
+            "name": "negative step",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, 0, -1]]
+            },
+            "expect": [{ "code": "step_out_of_range", "index": 0 }]
+        },
+        {
+            "name": "step 2 with two steps",
+            "steps": 2,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[0, 0, 0, 0, 0, 2]]
+            },
+            "expect": [{ "code": "step_out_of_range", "index": 0 }]
+        },
+        {
+            "name": "two blocks in one cell",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [
+                    [1, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 0, 0, 0]
+                ]
+            },
+            "expect": [{ "code": "block_overlap", "index": 1 }]
+        },
+        {
+            "name": "overlap with another color and rotation",
+            "steps": 2,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": [
+                    "01aaaaaaaaaaaaaaaaaaaaaaaa",
+                    "01bbbbbbbbbbbbbbbbbbbbbbbb"
+                ],
+                "blocks": [
+                    [2, 0, 2, 0, 0, 0],
+                    [2, 0, 2, 1, 3, 1]
+                ]
+            },
+            "expect": [{ "code": "block_overlap", "index": 1 }]
+        },
+        {
+            "name": "three blocks in one cell",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [
+                    [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0]
+                ]
+            },
+            "expect": [
+                { "code": "block_overlap", "index": 1 },
+                { "code": "block_overlap", "index": 2 }
+            ]
+        },
+        {
+            "name": "one block, two problems",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [[9, 0, 0, 0, 7, 0]]
+            },
+            "expect": [
+                { "code": "block_out_of_bounds", "index": 0 },
+                { "code": "rotation_invalid", "index": 0 }
+            ]
+        },
+        {
+            "name": "problems come in block order",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [
+                    [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0],
+                    [4, 0, 0, 0, 0, 0],
+                    [1, 0, 0, 5, 0, 0]
+                ]
+            },
+            "expect": [
+                { "code": "block_overlap", "index": 1 },
+                { "code": "block_out_of_bounds", "index": 2 },
+                { "code": "palette_index_out_of_range", "index": 3 }
+            ]
+        },
+        {
+            "name": "an out of bounds block does not count for overlaps",
+            "steps": 1,
+            "data": {
+                "version": 1,
+                "size": { "w": 4, "h": 3, "d": 4 },
+                "palette": ["01aaaaaaaaaaaaaaaaaaaaaaaa"],
+                "blocks": [
+                    [4, 0, 0, 0, 0, 0],
+                    [4, 0, 0, 0, 0, 0]
+                ]
+            },
+            "expect": [
+                { "code": "block_out_of_bounds", "index": 0 },
+                { "code": "block_out_of_bounds", "index": 1 }
+            ]
+        }
+    ]
+}
